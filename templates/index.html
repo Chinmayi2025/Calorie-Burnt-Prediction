@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> <!-- Link to the CSS file -->
+    <script>
+        async function predictCalories() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = document.getElementById("age").value;
+            const height = document.getElementById("height").value;
+            const weight = document.getElementById("weight").value;
+            const duration = document.getElementById("duration").value;
+            const heart_rate = document.getElementById("heart_rate").value;
+            const body_temp = document.getElementById("body_temp").value;
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ gender, age, height, weight, duration, heart_rate, body_temp }),
+            });
+
+            const result = await response.json();
+            document.getElementById("result").innerText = `Calories Burnt: ${result.calories_burnt.toFixed(2)} kcal`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Calorie Burn Prediction</h1>
+    <form onsubmit="event.preventDefault(); predictCalories();">
+        <label>Gender:</label>
+        <input type="radio" name="gender" value="1" checked> Male
+        <input type="radio" name="gender" value="0"> Female<br><br>
+
+        <label>Age:</label>
+        <input type="number" id="age" required><br><br>
+        
+        <label>Height (cm):</label>
+        <input type="number" id="height" required><br><br>
+        
+        <label>Weight (kg):</label>
+        <input type="number" id="weight" required><br><br>
+        
+ <label>Duration (minutes):</label>
+        <input type="number" id="duration" required><br><br>
+        
+        <label>Heart Rate:</label>
+        <input type="number" id="heart_rate" required><br><br>
+        
+        <label>Body Temperature (°C):</label>
+        <input type="number" id="body_temp" required><br><br>
+        
+        <button type="submit">Predict</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
